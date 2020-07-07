@@ -1,0 +1,73 @@
+version: "3.7"
+
+services:
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack}"
+    image: localstack/localstack
+    hostname: localstack
+    networks:
+      - localstack-net
+    ports:
+      - "4566-4599:4566-4599"
+      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+    environment:
+      - SERVICES=${SERVICES- }
+      - DEBUG=${DEBUG- }
+      - DATA_DIR=${DATA_DIR- }
+      - PORT_WEB_UI=${PORT_WEB_UI- }
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
+      - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOST_TMP_FOLDER=${TMPDIR}
+    volumes:
+      - "${HOME:-/tmp/localstack}:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./bin:/docker-entrypoint-initaws.d
+
+  scheduler:
+    build:
+      context: ./dask
+      dockerfile: Dockerfile
+    image: daskdev/dask
+    hostname: dask-scheduler
+    networks:
+      - localstack-net
+    ports:
+      - "8786:8786"
+      - "8787:8787"
+    command: ["dask-scheduler"]
+    depends_on:
+      - localstack
+
+  dask-worker:
+    build:
+      context: ./dask
+      dockerfile: Dockerfile
+    image: daskdev/dask
+    hostname: dask-worker
+    networks:
+      - localstack-net
+    command: ["dask-worker", "tcp://scheduler:8786"]
+    restart: on-failure
+    depends_on:
+      - localstack
+      - scheduler
+
+  redis:
+    image: redis:alpine
+    hostname: redis
+    networks:
+      - localstack-net
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+networks:
+  localstack-net:
+    external: false
+    driver: bridge
+    name: localstack-net
+
+volumes:
+  redis-data:
