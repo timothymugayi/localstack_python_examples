@@ -9,7 +9,7 @@ import pandas as pd
 from dask.distributed import Client, LocalCluster
 
 
-os.environ['LOCALSTACK_S3_ENDPOINT_URL'] = 'http://localstack:4572'
+os.environ['LOCALSTACK_S3_ENDPOINT_URL'] = 'http://localhost:4572'
 BASE_DIR = pathlib.Path(__file__).parent.absolute()
 
 
@@ -62,8 +62,9 @@ def compute_final_dataframe(df: dd.DataFrame) -> pd.DataFrame:
 
 def run():
 
+    # Lets toggle localstack by changing where boto3 is pointing to
     if os.environ.get('LOCALSTACK_S3_ENDPOINT_URL'):
-        taxi_data = dd.read_csv( 's3://nyc-tlc/trip data/yellow_tripdata_2018-04.csv',
+        taxi_data = dd.read_csv( 's3://nyc-tlc/trip data/yellow_tripdata_2018-04_*.csv',
             storage_options={
                 'anon': True,
                 'use_ssl': False,
@@ -74,13 +75,9 @@ def run():
             }
         )
     else:
-        taxi_data = dd.read_csv('s3://nyc-tlc/trip data/yellow_tripdata_2018-04.csv',
-            storage_options={
-                'anon': True,
-                'use_ssl': False,
-                'key': 'foo', 'secret': 'bar'
-            }
-        )
+        # This assumes your using named profiles in aws cli with a default profile accessing your s3 bucket or EC2
+        # instance or ECS task role
+        taxi_data = dd.read_csv('s3://nyc-tlc/trip data/yellow_tripdata_2018-04_*.csv')
 
     taxi_data = transform_dask_dataframe(taxi_data)
 

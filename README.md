@@ -13,5 +13,6 @@ $ docker-compose build --no-cache
 $ docker-compose up --scale dask-worker=4
 ```
 
-Dask dashboard: http://localhost:8787/status
-Dask client   : http://localhost:8786
+Dask dashboard Url: http://localhost:8787/status
+
+Dask client Url   : http://localhost:8786

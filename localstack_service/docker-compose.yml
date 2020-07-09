@@ -49,6 +49,10 @@ services:
       - localstack-net
     command: ["dask-worker", "tcp://scheduler:8786"]
     restart: on-failure
+    environment:
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_DEFAULT_REGION=us-east-1
     depends_on:
       - localstack
       - scheduler
