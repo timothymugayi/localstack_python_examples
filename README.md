@@ -1,5 +1,7 @@
 # Python Localstack Examples
 
+This repo is to showcase how to use localstack with Python
+
 
 Create new virtual envionment to run examples against 
 localstack docker venv. Execution of your code can be 
@@ -26,3 +28,8 @@ are in conda environment.yml file
 
 Python version is set to **3.8.3** in condo environment.yml. You may change
 this if you wish to match with your client version or change your client version.
+
+
+## Want to contribute ?
+
+Feel free to raise A PR with new examples
