@@ -44,7 +44,7 @@ body = {
   }
 }
 
-
+# Below is your typical message sending and receiving with long polling
 response = sqs.send_message(
     QueueUrl='http://localhost:4576/000000000000/blockchain-local-engine-input.fifo',
     MessageBody=json.dumps(body),
@@ -57,7 +57,7 @@ response = sqs.send_message(
     }
 )
 
-
+# WaitTimeSeconds=20 enables longer polling this means less read cycles to SQS reducing your costs if running in production
 messages = sqs.receive_message(QueueUrl='http://localhost:4576/000000000000/blockchain-local-engine-input.fifo',
     AttributeNames=['All'], MaxNumberOfMessages=10, WaitTimeSeconds=20, VisibilityTimeout=30)
 
