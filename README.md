@@ -49,6 +49,34 @@ PORT_WEB_UI=${PORT_WEB_UI- }
  
 HOST_TMP_FOLDER
 
+
+## Accessing your localstack with your AWS CLI
+
+Each of your aws cli commands should consist of the endpoint url 
+in the below example am using aws named profile which sets my default access and secret key
+
+```
+aws --endpoint-url=http://localhost:4572 s3 ls "s3://nyc-tlc/trip data/" --profile localstack
+```
+
+~/.aws/credentials
+
+```
+[localstack]
+aws_access_key_id = foo
+aws_secret_access_key = bar
+```
+
+~/.aws/config
+```
+[profile localstack]
+region = us-east-1
+output = json
+```
+
+
+
+
 ## Want to contribute ?
 
 Feel free to raise A PR with new examples
