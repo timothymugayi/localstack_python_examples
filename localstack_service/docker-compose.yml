@@ -11,10 +11,10 @@ services:
       - "4566-4599:4566-4599"
       - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
     environment:
-      - SERVICES=${SERVICES- }
-      - DEBUG=${DEBUG- }
-      - DATA_DIR=${DATA_DIR- }
-      - PORT_WEB_UI=${PORT_WEB_UI- }
+      - SERVICES=iam,lambda,s3,sqs,sts
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack
+      - PORT_WEB_UI=8080
       - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
       - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
       - DOCKER_HOST=unix:///var/run/docker.sock
@@ -36,6 +36,10 @@ services:
       - "8786:8786"
       - "8787:8787"
     command: ["dask-scheduler"]
+    environment:
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_DEFAULT_REGION=us-east-1
     depends_on:
       - localstack
 
@@ -56,6 +60,34 @@ services:
     depends_on:
       - localstack
       - scheduler
+
+  base-notebook:
+    build:
+      context: github.com/jupyter/docker-stacks.git#master:base-notebook
+      dockerfile: Dockerfile
+      args:
+        PYTHON_VERSION: "3.8.3"
+    image: jupyter/base-notebook:lab
+
+  notebook-dask:
+    build:
+      context: ./dask_s3
+      dockerfile: Dockerfile
+    container_name: notebook-dask
+    image: daskdev/dask-notebook
+    depends_on:
+      - base-notebook
+    hostname: notebook
+    networks:
+      - localstack-net
+    ports:
+      - "8888:8888"
+    environment:
+      - DASK_SCHEDULER_ADDRESS="tcp://scheduler:8786"
+    working_dir: /home/jovyan/work
+    volumes:
+      - ./dask_s3:/home/jovyan/work
+      - ./dask_s3/jupyter_notebook_config.py:/home/jovyan/.jupyter/jupyter_notebook_config.py
 
   redis:
     image: redis:alpine

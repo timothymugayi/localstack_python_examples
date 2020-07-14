@@ -30,6 +30,25 @@ Python version is set to **3.8.3** in condo environment.yml. You may change
 this if you wish to match with your client version or change your client version.
 
 
+
+## Persisting data across restarts
+Localstack's docker container lets you configure the data directory and put it in a mounted volume.
+
+This means data for Kinesis, DynamoDB, Elasticsearch, S3 gets kept across container restarts. This is not the default behaviour.
+
+We can enable this with an environment variable set DATA_DIR=/tmp/localstack/data, or we can hardcode our preferred DATA_DIR into the docker-compose file:
+
+- DATA_DIR=/tmp/localstack/data
+
+
+## Understanding some of the environment variables 
+
+SERVICES=${SERVICES- }
+
+PORT_WEB_UI=${PORT_WEB_UI- }
+ 
+HOST_TMP_FOLDER
+
 ## Want to contribute ?
 
 Feel free to raise A PR with new examples

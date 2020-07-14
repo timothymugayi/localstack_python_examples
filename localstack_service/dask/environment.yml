@@ -14,7 +14,7 @@ dependencies:
   - nomkl
   - numpy=1.18.4
   - pandas=1.0.3
-  - lz4
+  - lz4=2.2.1
   - s3fs=0.4.2
   - gcsfs
   - scikit-learn=0.23.1

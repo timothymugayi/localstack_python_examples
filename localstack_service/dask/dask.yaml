@@ -6,6 +6,7 @@ logging:
 scheduler:
   work-stealing: True
   allowed-failures: 10
+  tick-maximum-delay: 10 s
 
 admin:
   log-format: '%(name)s - %(levelname)s - %(message)s'
