@@ -137,8 +137,11 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# Sample data
-yellow_tripdata_2018-04.csv
-
 # IDE
 .idea/
+
+# localstack auto generated files
+localstack_service/data/server.test.pem
+localstack_service/data/server.test.pem.crt
+localstack_service/data/server.test.pem.key
+localstack_service/data/data/*

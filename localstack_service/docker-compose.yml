@@ -13,14 +13,14 @@ services:
     environment:
       - SERVICES=iam,lambda,s3,sqs,sts
       - DEBUG=1
-      - DATA_DIR=/tmp/localstack
+      - DATA_DIR=/tmp/localstack/data
       - PORT_WEB_UI=8080
       - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR- }
       - KINESIS_ERROR_PROBABILITY=${KINESIS_ERROR_PROBABILITY- }
       - DOCKER_HOST=unix:///var/run/docker.sock
       - HOST_TMP_FOLDER=${TMPDIR}
     volumes:
-      - "${HOME:-/tmp/localstack}:/tmp/localstack"
+      - ./data:/tmp/localstack
       - "/var/run/docker.sock:/var/run/docker.sock"
       - ./bin:/docker-entrypoint-initaws.d
 

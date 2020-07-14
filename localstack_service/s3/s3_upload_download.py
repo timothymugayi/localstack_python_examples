@@ -64,4 +64,3 @@ reader.close()
 opt_file.close()
 if os.path.exists(opt_file.name):
     os.remove(opt_file.name)
-
