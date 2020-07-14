@@ -7,7 +7,7 @@ dependencies:
   - pip
   - tini
   - fastparquet
-  - python-blosc
+  - python-blosc=1.7.0
   - cytoolz
   - dask=2.17.2
   - distributed=2.17.0
@@ -16,9 +16,9 @@ dependencies:
   - pandas=1.0.3
   - lz4=2.2.1
   - s3fs=0.4.2
-  - gcsfs
+  - gcsfs=0.6.2
   - scikit-learn=0.23.1
-  - scipy
+  - scipy=1.5.0
   - xarray
   - zict
   - dask-ml=1.5.0
