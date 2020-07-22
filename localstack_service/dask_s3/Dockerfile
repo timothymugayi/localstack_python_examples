@@ -11,7 +11,7 @@ USER $NB_USER
 
 RUN conda install --yes \
     -c conda-forge \
-    python-blosc=1.7.0 \
+    python-blosc \
     cytoolz \
     dask==2.17.2 \
     lz4==2.2.1 \

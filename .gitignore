@@ -145,3 +145,4 @@ localstack_service/data/server.test.pem
 localstack_service/data/server.test.pem.crt
 localstack_service/data/server.test.pem.key
 localstack_service/data/data/*
+localstack_service/serverless_lambda/node_modules/*

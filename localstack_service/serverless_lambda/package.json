@@ -1,0 +1,10 @@
+{
+  "name": "serverless_lambda",
+  "description": "serverless lambda",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless-localstack": "^0.4.24",
+    "serverless-python-requirements": "^5.1.0"
+  }
+}

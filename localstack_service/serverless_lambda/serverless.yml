@@ -1,0 +1,66 @@
+service: simple-http-endpoint
+
+frameworkVersion: ">=1.2.0 <2.0.0"
+
+plugins:
+  - serverless-localstack
+  # - serverless-python-requirements
+
+provider:
+  name: aws
+  runtime: python3.7
+  stage: ${opt:stage, 'local'}
+  memorySize: 10  24
+  timeout: 20
+  logRetentionInDays: 14
+  region: us-east-1
+  deploymentPrefix: aws-lambda
+  deploymentBucket: # when using localstack its important that before you deploy your lambda your s3 bucket already exists you can do this automatically via added your aws cli create bucket commands to the localstack-entrypoint.sh script
+    name: ${self:service}-${opt:stage}-deploy
+
+package:
+  exclude:
+    - node_modules/**
+    - venv/**
+    - .pytest_cache/**
+    - tests/*
+
+functions:
+  currentTime:
+    handler: handler.endpoint
+    events:
+      - http:
+          path: ping
+          method: get
+
+# severless deploy --stage=local
+# local stag configurations this will only be invoked for deploy stage local
+# Using stage attribute allows you to switch environments easily
+# you need to ensure localstack services started with the following s3,lambda,cloudformation,sts,iam,cloudwatch, apigateway(if ur lambda uses http methods, websockets)
+custom:
+  pythonRequirements:
+    dockerizePip: false
+  localstack:
+    debug: true # enable or disable debugging
+    stages:
+      # list of stages for which the plugin should be enabled
+      - local
+    host: http://localhost  # optional - LocalStack host to connect to
+    autostart: true  # optional - start LocalStack in Docker on Serverless deploy
+    endpoints:
+      # This section is optional - can be used for customizing the target endpoints
+      S3: http://localhost:4572
+      DynamoDB: http://localhost:4569
+      CloudFormation: http://localhost:4581
+      Elasticsearch: http://localhost:4571
+      ES: http://localhost:4578
+      SNS: http://localhost:4575
+      SQS: http://localhost:4576
+      Lambda: http://localhost:4574
+      Kinesis: http://localhost:4568
+    lambda:
+      # Enable this flag to improve performance
+      mountCode: True
+    docker:
+      # Enable this flag to run "docker ..." commands as sudo
+      sudo: True

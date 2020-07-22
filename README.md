@@ -74,7 +74,54 @@ region = us-east-1
 output = json
 ```
 
+## Serverless deploy steps 
 
+```
+$ npm install -g serverless
+
+$ npm install
+
+$ npm link    
+
+$ serverless deploy --stage local  --profile localstack
+
+$ serverless invoke --function currentTime --log --profile localstack --stage local
+
+```
+The URL pattern for API Gateway localstack executions is
+
+```
+http://localhost:4566/restapis/<apiId>/<stage>/_user_request_/<methodPath>
+```
+
+This would map to below
+
+```
+$ curl http://localhost:4567/restapis/4d0hum90mq/local/_user_request_/ping
+```
+
+## Localstack health check 
+
+curl http://localhost:4566/health
+
+Take note initial run of your rest api calls may take sometime
+
+```
+{
+  "services": {
+    "cloudformation": "running",
+    "cloudwatch": "running",
+    "iam": "running",
+    "sts": "running",
+    "lambda": "running",
+    "logs": "running",
+    "s3": "running",
+    "sqs": "running",
+    "events": "running",
+    "apigateway": "running"
+  }
+}
+```
 
 
 ## Want to contribute ?
