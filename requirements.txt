@@ -4,7 +4,7 @@ botocore==1.17.16
 click==7.1.2
 cloudpickle==1.4.1
 dask==2.17.2
-distributed==2.17.0
+distributed==2021.10.0
 docutils==0.15.2
 fsspec==0.7.4
 HeapDict==1.0.1
