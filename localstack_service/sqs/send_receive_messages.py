@@ -3,23 +3,16 @@ import json
 import uuid
 import boto3
 
-# inside docker use docker dns name localstack
-# os.environ['LOCALSTACK_SQS_ENDPOINT_URL'] = 'http://localstack:4576'
-
-# if your connecting to the localstack outside docker use host dns
-# each aws service has its own endpoint url ensure boto3 client is configured accordingly
-# you can change endpoint_url to point to any local aws stack e.g aws local dynamodb instance
-os.environ['LOCALSTACK_SQS_ENDPOINT_URL'] = 'http://localhost:4576'
-os.environ['AWS_ACCESS_KEY_ID'] = 'foo'
-os.environ['AWS_SECRET_ACCESS_KEY'] = 'bar'
+# Use the created SQS FIFO queue endpoint
+os.environ['LOCALSTACK_SQS_ENDPOINT_URL'] = 'http://localhost:4566'
+os.environ['AWS_ACCESS_KEY_ID'] = 'test'
+os.environ['AWS_SECRET_ACCESS_KEY'] = 'test'
 os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
 
-
 if os.environ.get('LOCALSTACK_SQS_ENDPOINT_URL'):
-    sqs = boto3.client("sqs", endpoint_url = os.environ.get('LOCALSTACK_SQS_ENDPOINT_URL'))
+    sqs = boto3.client("sqs", endpoint_url=os.environ.get('LOCALSTACK_SQS_ENDPOINT_URL'))
 else:
     sqs = boto3.client("sqs")
-
 
 body = {
   "time": {
@@ -32,7 +25,7 @@ body = {
     "USD": {
       "code": "USD",
       "rate": "9,083.8632",
-      "descriptio n": "United States Dollar",
+      "description": "United States Dollar",
       "rate_float": 9083.8632
     },
     "BTC": {
@@ -44,11 +37,16 @@ body = {
   }
 }
 
-# Below is your typical message sending and receiving with long polling
+# Ensure the FIFO queue exists
+# response = sqs.create_queue(
+#     QueueName='blockchain-local-engine-input.fifo',
+#     Attributes={'FifoQueue': 'true'}
+# )
+
+# Send message to SQS
 response = sqs.send_message(
-    QueueUrl='http://localhost:4576/000000000000/blockchain-local-engine-input.fifo',
+    QueueUrl='http://localhost:4566/000000000000/blockchain-local-engine-input.fifo',
     MessageBody=json.dumps(body),
-    DelaySeconds=3,
     MessageDeduplicationId=str(uuid.uuid4()),
     MessageGroupId='blockchain',
     MessageAttributes={
@@ -57,25 +55,24 @@ response = sqs.send_message(
     }
 )
 
-# WaitTimeSeconds=20 enables longer polling this means less read cycles to SQS reducing your costs if running in production
-messages = sqs.receive_message(QueueUrl='http://localhost:4576/000000000000/blockchain-local-engine-input.fifo',
-    AttributeNames=['All'], MaxNumberOfMessages=10, WaitTimeSeconds=20, VisibilityTimeout=30)
-
+# WaitTimeSeconds=20 enables longer polling, reducing read cycles and costs in production
+messages = sqs.receive_message(
+    QueueUrl='http://localhost:4566/000000000000/blockchain-local-engine-input.fifo',
+    AttributeNames=['All'], MaxNumberOfMessages=10, WaitTimeSeconds=20, VisibilityTimeout=30
+)
 
 messages = messages.get("Messages", [])
-    
+
 print('Total messages = {}'.format(len(messages)))
 
 for message in messages:
-
     message_body = json.loads(message.get('Body'))
-
     print(message_body)
-
-    sqs.delete_message(
-            QueueUrl='http://localhost:4576/000000000000/blockchain-local-engine-input.fifo',
-            ReceiptHandle=message.get("ReceiptHandle"))
-
+    # sqs.delete_message(
+    #     QueueUrl='http://localhost:4566/000000000000/blockchain-local-engine-input.fifo',
+    #     ReceiptHandle=message.get("ReceiptHandle")
+    # )
+    
     messages = sqs.receive_message(QueueUrl='http://localhost:4576/000000000000/blockchain-local-engine-input.fifo',
                                    AttributeNames=['All'], MaxNumberOfMessages=10, WaitTimeSeconds=20,
                                    VisibilityTimeout=30)
@@ -83,5 +80,4 @@ for message in messages:
     messages = messages.get("Messages", [])
 
     print('Total messages remaining ={}'.format(len(messages)))
-
 

@@ -1,7 +1,6 @@
 import json
 import datetime
 
-
 def endpoint(event, context):
     current_time = datetime.datetime.now().time()
     body = {
@@ -13,3 +12,12 @@ def endpoint(event, context):
         "body": json.dumps(body)
     }
     return response
+
+if __name__ == "__main__":
+    # Example event and context data
+    event = {}  # Replace with actual event data
+    context = {}  # Replace with actual context data
+
+    # Call the endpoint function with sample data
+    response = endpoint(event, context)
+    print(response)
