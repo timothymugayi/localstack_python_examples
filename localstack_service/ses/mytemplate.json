@@ -1,0 +1,8 @@
+{
+    "TemplateName": "helloTemplate",
+    "TemplateContent": {
+        "Subject": "Greetings, user!",
+        "Text": "Dear user,\nYour favorite animal is dog.",
+        "Html": "<h1>Hello user,</h1><p>Your favorite animal is lol.</p>"
+    }
+}
