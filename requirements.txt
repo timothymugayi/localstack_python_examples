@@ -14,7 +14,7 @@ joblib==1.2.0
 llvmlite==0.33.0
 MarkupSafe==1.1.1
 msgpack==1.0.0
-numpy==1.18.4
+numpy==1.22.0
 packaging==20.4
 pandas==1.0.3
 Pillow==10.3.0
