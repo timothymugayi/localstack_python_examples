@@ -10,7 +10,7 @@ fsspec==0.7.4
 HeapDict==1.0.1
 Jinja2==3.1.5
 jmespath==0.10.0
-joblib==0.16.0
+joblib==1.2.0
 llvmlite==0.33.0
 MarkupSafe==1.1.1
 msgpack==1.0.0
